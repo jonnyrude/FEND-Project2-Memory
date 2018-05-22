@@ -1,7 +1,8 @@
 /*
  * Create a list that holds all of your cards
  */
-
+const cards = document.querySelectorAll('.card');
+const showingCards = [];
 
 /*
  * Display the cards on the page
@@ -9,6 +10,11 @@
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+shuffle(cards);
+for (const card of cards) {
+    card.classList.remove('match', 'show', 'open');
+}
+document.querySelector('.deck').appendChild(...cards);
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -25,6 +31,43 @@ function shuffle(array) {
     return array;
 }
 
+function show(element) {
+    if (element.classList.contains('show')){
+        return;
+    }
+    else {
+        element.classList.add('show', 'open');
+        return;
+    }
+}
+
+function isShowing(element) {
+    if (!showingCards.includes(element)) {
+        showingCards.unshift(element)
+    }
+    return;
+}
+
+function setMatching() {
+    showingCards[0].className = 'card match';
+    showingCards[1].className = 'card match';
+}
+
+function notMatching() {
+    showingCards[0].className = 'card';
+    showingCards.shift();
+    showingCards[0].className = 'card';
+    showingCards.shift();
+}
+
+function countTurn() {
+    const counter = document.querySelector('.moves');
+    counter.textContent = (Number(counter.textContent) + 1).toString()
+}
+
+function gameWon() {
+    window.alert('you won. what fun.')
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -36,3 +79,21 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+document.querySelector('.deck').addEventListener('click', function(evt){
+    const picked = event.target;
+    show(picked);
+    isShowing(picked);
+    if (showingCards.length % 2 === 0) {
+        if (showingCards[0].firstElementChild.classList.value === showingCards[1].firstElementChild.classList.value) {
+            setMatching();
+        }
+        else {
+            setTimeout(notMatching(), 10000);
+        }
+    countTurn();
+    }
+
+    if (showingCards.length === 16) {
+        gameWon();
+    }
+})
