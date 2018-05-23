@@ -2,19 +2,40 @@
  * Create a list that holds all of your cards
  */
 const cards = document.querySelectorAll('.card');
-const showingCards = [];
+
+// List of cards up/showing
+let showingCards = [];
+
+// This true/false flag keeps the user from clicking too fast
+// and turning a 3rd card in the middle of the turn.
+let inTurn = false;
 
 /*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-shuffle(cards);
-for (const card of cards) {
-    card.classList.remove('match', 'show', 'open');
+* Display the cards on the page
+*   - shuffle the list of cards using the provided "shuffle" method below
+*   - loop through each card and create its HTML
+*   - add each card's HTML to the page
+*/
+// Since this functionality is the same as restarting a new game
+// I went ahead and put it into the restart function - called when
+// the restart symbol is clicked - and ran that function at the beginning
+
+
+restart();
+
+
+
+function restart() {
+    for (const card of showingCards) {
+        card.classList.remove('match');
+    }
+    showingCards = [];
+    shuffle(cards);
+    for (const card of cards) {
+        card.classList.remove('match', 'show', 'open');
+    }
+    document.querySelector('.deck').appendChild(...cards);
 }
-document.querySelector('.deck').appendChild(...cards);
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -51,6 +72,7 @@ function isShowing(element) {
 function setMatching() {
     showingCards[0].className = 'card match';
     showingCards[1].className = 'card match';
+    inTurn=false;
 }
 
 function notMatching() {
@@ -58,6 +80,7 @@ function notMatching() {
     showingCards.shift();
     showingCards[0].className = 'card';
     showingCards.shift();
+    inTurn = false;
 }
 
 function countTurn() {
@@ -68,6 +91,7 @@ function countTurn() {
 function gameWon() {
     window.alert('you won. what fun.')
 }
+
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -80,6 +104,8 @@ function gameWon() {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 document.querySelector('.deck').addEventListener('click', function(evt){
+    if (inTurn) { return; }
+    inTurn = true;
     const picked = event.target;
     show(picked);
     isShowing(picked);
@@ -88,12 +114,17 @@ document.querySelector('.deck').addEventListener('click', function(evt){
             setMatching();
         }
         else {
-            setTimeout(notMatching(), 10000);
+            window.setTimeout(notMatching, 500);
         }
     countTurn();
     }
+    else {
+        inTurn = false;
+    }
 
     if (showingCards.length === 16) {
-        gameWon();
+        window.setTimeout(gameWon, 200);
     }
 })
+
+document.querySelector('.restart').addEventListener('click', restart)
