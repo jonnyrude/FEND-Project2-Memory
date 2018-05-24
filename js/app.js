@@ -35,6 +35,9 @@ function restart() {
         card.classList.remove('match', 'show', 'open');
     }
     document.querySelector('.deck').appendChild(...cards);
+
+    // restart counter
+    document.querySelector('.moves').textContent = '0';
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
