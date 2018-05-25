@@ -71,6 +71,7 @@ function isShowing(element) {
 function setMatching() {
     showingCards[0].className = 'card match';
     showingCards[1].className = 'card match';
+    // this ends the turn - needs to be here since function exec is delayed
     inTurn=false;
 }
 
@@ -90,6 +91,7 @@ function countTurn() {
 function gameWon() {
     window.alert('you won. what fun.')
 }
+
 
 
 /*
@@ -112,6 +114,8 @@ document.querySelector('.deck').addEventListener('click', function(evt){
         const picked = event.target;
         show(picked);
         isShowing(picked);
+
+        // If it's the second card turned, check for match
         if (showingCards.length % 2 === 0) {
             if (showingCards[0].firstElementChild.classList.value === showingCards[1].firstElementChild.classList.value) {
                 setMatching();
@@ -125,6 +129,7 @@ document.querySelector('.deck').addEventListener('click', function(evt){
             inTurn = false;
         }
 
+        // if you've flipped the 16th card, you must have won
         if (showingCards.length === 16) {
             window.setTimeout(gameWon, 200);
         }
