@@ -19,11 +19,7 @@ let inTurn = false;
 // Since this functionality is the same as restarting a new game
 // I went ahead and put it into the restart function - called when
 // the restart symbol is clicked - and ran that function at the beginning
-
-
 restart();
-
-
 
 function restart() {
     for (const card of showingCards) {
@@ -55,8 +51,8 @@ function shuffle(array) {
     return array;
 }
 
-function show(element) {
-    if (element.classList.contains('show')){
+function show(element) { // || element.classList.contains('match')
+    if (element.classList.contains('show') ){
         return;
     }
     else {
@@ -107,27 +103,33 @@ function gameWon() {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 document.querySelector('.deck').addEventListener('click', function(evt){
-    if (inTurn) { return; }
-    inTurn = true;
-    const picked = event.target;
-    show(picked);
-    isShowing(picked);
-    if (showingCards.length % 2 === 0) {
-        if (showingCards[0].firstElementChild.classList.value === showingCards[1].firstElementChild.classList.value) {
-            setMatching();
+    // Only execute when NOt already in a turn (prevents 3rd card flip) AND the click.target is a card
+    if (!inTurn && evt.target.classList.value === "card") {
+
+        console.log(evt.target); // TODO: Remove this log
+
+        inTurn = true;
+        const picked = event.target;
+        show(picked);
+        isShowing(picked);
+        if (showingCards.length % 2 === 0) {
+            if (showingCards[0].firstElementChild.classList.value === showingCards[1].firstElementChild.classList.value) {
+                setMatching();
+            }
+            else {
+                window.setTimeout(notMatching, 500);
+            }
+        countTurn();
         }
         else {
-            window.setTimeout(notMatching, 500);
+            inTurn = false;
         }
-    countTurn();
-    }
-    else {
-        inTurn = false;
-    }
 
-    if (showingCards.length === 16) {
-        window.setTimeout(gameWon, 200);
+        if (showingCards.length === 16) {
+            window.setTimeout(gameWon, 200);
+        }
     }
+    return;
 })
 
 document.querySelector('.restart').addEventListener('click', restart)
