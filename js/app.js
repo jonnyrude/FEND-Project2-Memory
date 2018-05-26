@@ -16,6 +16,15 @@ let timerRunning = false;
 let seconds = 0;
 let minutes = 0;
 
+
+const deck = ['diamond','diamond',
+            'paper-plane', 'paper-plane',
+            'anchor', 'anchor',
+            'bolt',  'bolt',
+            'cube', 'cube',
+            'leaf', 'leaf',
+            'bomb', 'bomb',
+            'bicycle', 'bicycle']
 /*
 * Display the cards on the page
 *   - shuffle the list of cards using the provided "shuffle" method below
@@ -28,15 +37,17 @@ let minutes = 0;
 restart();
 
 function restart() {
-    for (const card of showingCards) {
-        card.classList.remove('match');
-    }
+
     showingCards = [];
-    shuffle(cards);
-    for (const card of cards) {
-        card.classList.remove('match', 'show', 'open');
+    shuffle(deck);
+    let deckHTML = ''
+    for (const card of deck) {
+        deckHTML = deckHTML.concat(
+        `<li class="card">
+            <i class="fa fa-${card}"></i>
+        </li>`);
     }
-    document.querySelector('.deck').appendChild(...cards);
+    document.querySelector('.deck').innerHTML = deckHTML;
 
     // restart counter
     document.querySelector('.moves').textContent = '0';
