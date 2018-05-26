@@ -96,6 +96,10 @@ function notMatching() {
 function countTurn() {
     const counter = document.querySelector('.moves');
     counter.textContent = (Number(counter.textContent) + 1).toString()
+
+    if(Number(counter.textContent) === 11 || Number(counter.textContent) === 14) {
+        removeStar();
+    }
 }
 
 function gameWon() {
@@ -110,10 +114,19 @@ function toggleTimer() {
             seconds = 0;
         }
         const fillerZero = seconds >= 10 ? '' : '0';
-        document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`
+        document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`;
     }, 1000)
 }
 
+function removeStar() {
+    const stars = document.querySelectorAll('.fa-star')
+    if (stars.length === 1) {
+        return;
+    }
+    else {
+        stars[0].remove();
+    }
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
