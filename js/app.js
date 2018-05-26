@@ -42,9 +42,9 @@ function restart() {
     document.querySelector('.moves').textContent = '0';
 
     // reset timer
-    seconds = 0;
-    minutes = 0;
-    toggleTimer();
+    if (timerRunning) {
+        toggleTimer();
+    }
 
     // reset stars
     const allStars =
@@ -106,7 +106,7 @@ function countTurn() {
     const counter = document.querySelector('.moves');
     counter.textContent = (Number(counter.textContent) + 1).toString()
 
-    if(Number(counter.textContent) === 1 || Number(counter.textContent) === 14) {
+    if(Number(counter.textContent) === 11 || Number(counter.textContent) === 14) {
         removeStar();
     }
 }
@@ -116,7 +116,6 @@ function gameWon() {
 }
 
 function toggleTimer() {
-
     seconds = 0;
     minutes = 0;
 
@@ -131,6 +130,11 @@ function toggleTimer() {
             document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`;
         }, 1000)
         timerRunning = true;
+    }
+    else {
+        window.clearInterval(timerID);
+        timerRunning = false;
+        document.querySelector('.timer').textContent = `0:00`;
     }
 }
 
@@ -157,6 +161,10 @@ function removeStar() {
 document.querySelector('.deck').addEventListener('click', function(evt){
     // Only execute when NOt already in a turn (prevents 3rd card flip) AND the click.target is a card
     if (!inTurn && evt.target.classList.value === "card") {
+
+        if (!timerRunning) {
+            toggleTimer();
+        }
 
         console.log(evt.target); // TODO: Remove this log
 
