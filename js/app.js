@@ -45,6 +45,14 @@ function restart() {
     seconds = 0;
     minutes = 0;
     toggleTimer();
+
+    // reset stars
+    const allStars =
+    '<li><i class="fa fa-star"></i></li>' +
+    '<li><i class="fa fa-star"></i></li>' +
+    '<li><i class="fa fa-star"></i></li>';
+
+    document.querySelector('.stars').innerHTML = allStars;
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -98,7 +106,7 @@ function countTurn() {
     const counter = document.querySelector('.moves');
     counter.textContent = (Number(counter.textContent) + 1).toString()
 
-    if(Number(counter.textContent) === 11 || Number(counter.textContent) === 14) {
+    if(Number(counter.textContent) === 1 || Number(counter.textContent) === 14) {
         removeStar();
     }
 }
