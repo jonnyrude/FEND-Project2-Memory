@@ -10,6 +10,11 @@ let showingCards = [];
 // and turning a 3rd card in the middle of the turn.
 let inTurn = false;
 
+// timer variable
+let timerId;
+let seconds = 0;
+let minutes = 0;
+
 /*
 * Display the cards on the page
 *   - shuffle the list of cards using the provided "shuffle" method below
@@ -34,6 +39,11 @@ function restart() {
 
     // restart counter
     document.querySelector('.moves').textContent = '0';
+
+    // reset timer
+    seconds = 0;
+    minutes = 0;
+    toggleTimer();
 }
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -92,6 +102,17 @@ function gameWon() {
     window.alert('you won. what fun.')
 }
 
+function toggleTimer() {
+    timerID = window.setInterval(function(){
+        seconds += 1;
+        if (seconds === 60) {
+            minutes += 1;
+            seconds = 0;
+        }
+        const fillerZero = seconds >= 10 ? '' : '0';
+        document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`
+    }, 1000)
+}
 
 
 /*
@@ -132,6 +153,7 @@ document.querySelector('.deck').addEventListener('click', function(evt){
         // if you've flipped the 16th card, you must have won
         if (showingCards.length === 16) {
             window.setTimeout(gameWon, 200);
+            window.clearInterval(timerID);
         }
     }
     return;
