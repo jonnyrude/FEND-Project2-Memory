@@ -12,6 +12,7 @@ let inTurn = false;
 
 // timer variable
 let timerId;
+let timerRunning = false;
 let seconds = 0;
 let minutes = 0;
 
@@ -107,15 +108,22 @@ function gameWon() {
 }
 
 function toggleTimer() {
-    timerID = window.setInterval(function(){
-        seconds += 1;
-        if (seconds === 60) {
-            minutes += 1;
-            seconds = 0;
-        }
-        const fillerZero = seconds >= 10 ? '' : '0';
-        document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`;
-    }, 1000)
+
+    seconds = 0;
+    minutes = 0;
+
+    if (!timerRunning) {
+        timerID = window.setInterval(function(){
+            seconds += 1;
+            if (seconds === 60) {
+                minutes += 1;
+                seconds = 0;
+            }
+            const fillerZero = seconds >= 10 ? '' : '0';
+            document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`;
+        }, 1000)
+        timerRunning = true;
+    }
 }
 
 function removeStar() {
