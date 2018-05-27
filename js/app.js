@@ -43,7 +43,7 @@ function restart() {
     let deckHTML = ''
     for (const card of deck) {
         deckHTML = deckHTML.concat(
-        `<li class="card">
+        `<li class="card" draggalbe="false">
             <i class="fa fa-${card}"></i>
         </li>`);
     }
@@ -123,7 +123,8 @@ function countTurn() {
 }
 
 function gameWon() {
-    window.alert('you won. what fun.')
+    // window.alert('you won. what fun.')
+    document.querySelector('.winner-screen').classList.toggle('won');
 }
 
 function toggleTimer() {
@@ -200,6 +201,12 @@ document.querySelector('.deck').addEventListener('click', function(evt){
 
         // if you've flipped the 16th card, you must have won
         if (showingCards.length === 16) {
+
+            // display stars awarded
+            document.querySelector('.stars-won').innerHTML = document.querySelector('.stars').innerHTML;
+
+            //display time
+            document.querySelector('.timer-won').innerHTML = document.querySelector('.timer').innerHTML;
             window.setTimeout(gameWon, 200);
             window.clearInterval(timerID);
         }
@@ -207,4 +214,8 @@ document.querySelector('.deck').addEventListener('click', function(evt){
     return;
 })
 
-document.querySelector('.restart').addEventListener('click', restart)
+document.querySelector('.restart').addEventListener('click', restart);
+document.querySelector('.restart-won').addEventListener('click', function() {
+    document.querySelector('.winner-screen').classList.toggle('won');
+    restart();
+});
