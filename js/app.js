@@ -39,7 +39,7 @@ restart();
 function restart() {
 
     showingCards = [];
-    shuffle(deck);
+    // shuffle(deck);  TODO: REMOVE!
     let deckHTML = ''
     for (const card of deck) {
         deckHTML = deckHTML.concat(
@@ -191,7 +191,10 @@ document.querySelector('.deck').addEventListener('click', function(evt){
                 setMatching();
             }
             else {
-                window.setTimeout(notMatching, 500);
+
+                showingCards[0].classList.toggle('miss-match');
+                showingCards[1].classList.toggle('miss-match');
+                window.setTimeout(notMatching, 800); // TODO: return to 500
             }
         countTurn();
         }
