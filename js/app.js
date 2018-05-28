@@ -1,6 +1,8 @@
-/*
- * Create a list that holds all of your cards
- */
+/*****************
+ * SET VARIABLES
+ ***************** */
+
+/* Create a list that holds all of your cards */
 const cards = document.querySelectorAll('.card');
 
 // List of cards up/showing
@@ -16,7 +18,7 @@ let timerRunning = false;
 let seconds = 0;
 let minutes = 0;
 
-
+// this array will be shuffled(), then will be used to create card HTML elements
 const deck = ['diamond','diamond',
             'paper-plane', 'paper-plane',
             'anchor', 'anchor',
@@ -25,31 +27,37 @@ const deck = ['diamond','diamond',
             'leaf', 'leaf',
             'bomb', 'bomb',
             'bicycle', 'bicycle']
-/*
-* Display the cards on the page
-*   - shuffle the list of cards using the provided "shuffle" method below
-*   - loop through each card and create its HTML
-*   - add each card's HTML to the page
-*/
-// Since this functionality is the same as restarting a new game
-// I went ahead and put it into the restart function - called when
-// the restart symbol is clicked - and ran that function at the beginning
-restart();
 
-function restart() {
 
-    showingCards = [];
-    // shuffle(deck);  TODO: REMOVE!
-    let deckHTML = ''
+/* ****************
+ * Start the game:
+ ******************* */
+
+newGame();
+
+/* *****************
+*   HELPER FUNCTIONS:
+********************* */
+
+function newGame() {
+    // shuffle aray/deck
+    shuffle(deck);
+
+    // generate HTML for card elements from deck array
+    let deckHTML = '';
     for (const card of deck) {
         deckHTML = deckHTML.concat(
-        `<li class="card" draggalbe="false">
+            `<li class="card" draggalbe="false">
             <i class="fa fa-${card}"></i>
-        </li>`);
-    }
+            </li>`);
+        }
+    // insert deckHTML into page
     document.querySelector('.deck').innerHTML = deckHTML;
 
-    // restart counter
+    // reset/clear the list of showing cards
+    showingCards = [];
+
+    // reset counter
     document.querySelector('.moves').textContent = '0';
 
     // reset timer
@@ -57,14 +65,14 @@ function restart() {
         toggleTimer();
     }
 
-    // reset stars
+    // reset stars - put back all 3 on page
     const allStars =
     '<li><i class="fa fa-star"></i></li>' +
     '<li><i class="fa fa-star"></i></li>' +
     '<li><i class="fa fa-star"></i></li>';
-
     document.querySelector('.stars').innerHTML = allStars;
 }
+
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -77,57 +85,64 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
 }
 
-function show(element) { // || element.classList.contains('match')
-    if (element.classList.contains('show') ){
-        return;
-    }
-    else {
+function show(element) {
+        // add clases that display the card
         element.classList.add('show', 'open');
         return;
-    }
 }
 
 function isShowing(element) {
-    if (!showingCards.includes(element)) {
-        showingCards.unshift(element)
-    }
+    // add element to list of showingCards
+    showingCards.unshift(element)
     return;
 }
 
 function setMatching() {
+    // set class of newly matching cards
     showingCards[0].className = 'card match';
     showingCards[1].className = 'card match';
-    // this ends the turn - needs to be here since function exec is delayed
-    inTurn=false;
+    inTurn=false; // ends the turn - needs to be here since functions execution is delayed
 }
 
 function notMatching() {
+    // returns cards' classes to just 'card' and removes from list of showingCards
     showingCards[0].className = 'card';
     showingCards.shift();
     showingCards[0].className = 'card';
     showingCards.shift();
-    inTurn = false;
+    inTurn = false; // ends the turn - needs to be here since function execution is delayed
 }
 
 function countTurn() {
+    // increments the counter for turns & decrements stars!
     const counter = document.querySelector('.moves');
     counter.textContent = (Number(counter.textContent) + 1).toString()
 
+    // Star lost at 11 turns and 14 turns
     if(Number(counter.textContent) === 11 || Number(counter.textContent) === 14) {
         removeStar();
     }
 }
 
 function gameWon() {
-    // window.alert('you won. what fun.')
+    // add stars awarded to winner-screen
+    document.querySelector('.stars-won').innerHTML = document.querySelector('.stars').innerHTML;
+
+    // add time completed to winner-screen
+    document.querySelector('.timer-won').innerHTML = document.querySelector('.timer').innerHTML;
+
+    // stop timer
+    toggleTimer();
+
+    // display winner-screen
     document.querySelector('.winner-screen').classList.toggle('won');
 }
 
 function toggleTimer() {
+    // clear and stop or restart the timer
     seconds = 0;
     minutes = 0;
 
@@ -160,65 +175,63 @@ function removeStar() {
     }
 }
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+/* *******************
+ * EVENT LISTENERS:
+ ********************* */
+    /*
+     * GAME LOGIC:
+     */
+
 document.querySelector('.deck').addEventListener('click', function(evt){
     // Only execute when NOt already in a turn (prevents 3rd card flip) AND the click.target is a card
-    if (!inTurn && evt.target.classList.value === "card") {
+    if (!inTurn && evt.target.classList.value === 'card') {
 
+        // start the timer if not already started:
         if (!timerRunning) {
             toggleTimer();
         }
 
-        console.log(evt.target); // TODO: Remove this log
-
         inTurn = true;
         const picked = event.target;
-        show(picked);
-        isShowing(picked);
+        show(picked); // show/reveal the card
+        isShowing(picked); // adds to list of showing cards
 
-        // If it's the second card turned, check for match
+        // If it's the 2nd card turned
         if (showingCards.length % 2 === 0) {
+            // if cards match
             if (showingCards[0].firstElementChild.classList.value === showingCards[1].firstElementChild.classList.value) {
                 setMatching();
             }
+            // if they DON'T match
             else {
-
+                // add 'miss-match' class/animation
                 showingCards[0].classList.toggle('miss-match');
                 showingCards[1].classList.toggle('miss-match');
-                window.setTimeout(notMatching, 800); // TODO: return to 500
+                window.setTimeout(notMatching, 800);
             }
-        countTurn();
+        countTurn(); // increments the # of turns
         }
+        // if it's the 1st card of a turn, just end the turn
         else {
             inTurn = false;
         }
 
+        // Check for a win!
         // if you've flipped the 16th card, you must have won
         if (showingCards.length === 16) {
-
-            // display stars awarded
-            document.querySelector('.stars-won').innerHTML = document.querySelector('.stars').innerHTML;
-
-            //display time
-            document.querySelector('.timer-won').innerHTML = document.querySelector('.timer').innerHTML;
+            // pause for flipping animation to complete, then end game
             window.setTimeout(gameWon, 200);
-            window.clearInterval(timerID);
         }
     }
     return;
 })
 
-document.querySelector('.restart').addEventListener('click', restart);
+// Event listener for restart game
+document.querySelector('.restart').addEventListener('click', newGame);
+
+// Event listener for restarting from winner-screen
 document.querySelector('.restart-won').addEventListener('click', function() {
+    // hide winner screen
     document.querySelector('.winner-screen').classList.toggle('won');
-    restart();
+    newGame();
 });
