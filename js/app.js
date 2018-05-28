@@ -26,13 +26,11 @@ const deck = ['diamond','diamond',
             'cube', 'cube',
             'leaf', 'leaf',
             'bomb', 'bomb',
-            'bicycle', 'bicycle']
-
+            'bicycle', 'bicycle'];
 
 /* ****************
  * Start the game:
  ******************* */
-
 newGame();
 
 /* *****************
@@ -88,27 +86,27 @@ function shuffle(array) {
     return array;
 }
 
+// add clases that display the card
 function show(element) {
-        // add clases that display the card
         element.classList.add('show', 'open');
         return;
 }
 
+// add element to list of showingCards
 function isShowing(element) {
-    // add element to list of showingCards
-    showingCards.unshift(element)
+    showingCards.unshift(element);
     return;
 }
 
+// set class of newly matching cards
 function setMatching() {
-    // set class of newly matching cards
     showingCards[0].className = 'card match';
     showingCards[1].className = 'card match';
     inTurn=false; // ends the turn - needs to be here since functions execution is delayed
 }
 
+// returns cards' classes to just 'card' and removes from list of showingCards
 function notMatching() {
-    // returns cards' classes to just 'card' and removes from list of showingCards
     showingCards[0].className = 'card';
     showingCards.shift();
     showingCards[0].className = 'card';
@@ -116,10 +114,10 @@ function notMatching() {
     inTurn = false; // ends the turn - needs to be here since function execution is delayed
 }
 
+// increments the counter for turns & decrements stars!
 function countTurn() {
-    // increments the counter for turns & decrements stars!
     const counter = document.querySelector('.moves');
-    counter.textContent = (Number(counter.textContent) + 1).toString()
+    counter.textContent = (Number(counter.textContent) + 1).toString();
 
     // Star lost at 11 turns and 14 turns
     if(Number(counter.textContent) === 11 || Number(counter.textContent) === 14) {
@@ -127,8 +125,8 @@ function countTurn() {
     }
 }
 
+// add stars awarded to winner-screen
 function gameWon() {
-    // add stars awarded to winner-screen
     document.querySelector('.stars-won').innerHTML = document.querySelector('.stars').innerHTML;
 
     // add time completed to winner-screen
@@ -141,8 +139,8 @@ function gameWon() {
     document.querySelector('.winner-screen').classList.toggle('won');
 }
 
+// clear and stop or restart the timer
 function toggleTimer() {
-    // clear and stop or restart the timer
     seconds = 0;
     minutes = 0;
 
@@ -155,7 +153,7 @@ function toggleTimer() {
             }
             const fillerZero = seconds >= 10 ? '' : '0';
             document.querySelector('.timer').textContent = `${minutes}:${fillerZero}${seconds}`;
-        }, 1000)
+        }, 1000);
         timerRunning = true;
     }
     else {
@@ -166,7 +164,7 @@ function toggleTimer() {
 }
 
 function removeStar() {
-    const stars = document.querySelectorAll('.fa-star')
+    const stars = document.querySelectorAll('.fa-star');
     if (stars.length === 1) {
         return;
     }
