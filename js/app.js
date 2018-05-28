@@ -176,10 +176,10 @@ function removeStar() {
 /* *******************
  * EVENT LISTENERS:
  ********************* */
+
     /*
      * GAME LOGIC:
      */
-
 document.querySelector('.deck').addEventListener('click', function(evt){
     // Only execute when NOt already in a turn (prevents 3rd card flip) AND the click.target is a card
     if (!inTurn && evt.target.classList.value === 'card') {
